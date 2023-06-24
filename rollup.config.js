@@ -1,14 +1,12 @@
 // /* eslint-disable @typescript-eslint/no-var-requires */
 // /* eslint-disable no-undef */
-// import commonjs from "@rollup/plugin-commonjs";
-// import resolve from "@rollup/plugin-node-resolve";
-// import typescript from "@rollup/plugin-typescript";
-//
-// import dts from "rollup-plugin-dts";
-// import peerDepsExternal from "rollup-plugin-peer-deps-external";
-// import { typescriptPaths } from "rollup-plugin-typescript-paths";
-// import { terser } from "rollup-plugin-terser";
-// import preserveDirectives from "rollup-plugin-preserve-directives";
+import commonjs from "@rollup/plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
+
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import { typescriptPaths } from "rollup-plugin-typescript-paths";
+import { terser } from "rollup-plugin-terser";
+import preserveDirectives from "rollup-plugin-preserve-directives";
 //
 // const outputOptions = {
 //   sourcemap: false,
@@ -73,23 +71,10 @@
 //   },
 // ];
 
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import pkg from "./package.json";
 
 export default [
-  // browser-friendly UMD build
-  {
-    input: "src/index.ts",
-    output: {
-      name: "tremor",
-      file: pkg.browser,
-      format: "umd"
-    },
-    plugins: [resolve(), commonjs(), typescript({ tsconfig: "./tsconfig.json" })]
-  },
-
   // CommonJS (for Node) and ES module (for bundlers) build.
   // (We could have three entries in the configuration array
   // instead of two, but it's quicker to generate multiple
@@ -100,8 +85,20 @@ export default [
     input: "src/index.ts",
     output: [
       { file: pkg.main, format: "cjs" },
-      { file: pkg.module, format: "es" }
+      { file: pkg.module, format: "es" },
     ],
-    plugins: [typescript({ tsconfig: "./tsconfig.json" })]
-  }
+    external: [/node_modules/],
+    plugins: [
+      peerDepsExternal(),
+      resolve(),
+      commonjs(),
+      preserveDirectives(),
+      terser(),
+      typescript({
+        tsconfig: "./tsconfig.json",
+        exclude: ["**/stories/**", "**/tests/**", "./styles.css"],
+      }),
+      typescriptPaths(),
+    ],
+  },
 ];
