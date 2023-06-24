@@ -1,5 +1,5 @@
 {
-  "name": "@tremor/react",
+  "name": "@king0120/tremor",
   "version": "0.0.0-development",
   "description": "The React library to build dashboards faster.",
   "scripts": {
@@ -99,12 +99,12 @@
     "react": "^18.0.0",
     "react-dom": ">=16.6.0"
   },
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
+  "main": "dist/tremor.cjs.js",
+  "module": "dist/tremor.esm.js",
+  "browser": "dist/tremor.umd.js",
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
